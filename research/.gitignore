@@ -1,0 +1,22 @@
+# Virtual Environment
+.venv/
+venv/
+ENV/
+env/
+
+# Python cache & bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+
+# Experimental runtime results and outputs
+results/
+*.log
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
