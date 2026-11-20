@@ -1,0 +1,33 @@
+# macOS system files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Node & Package managers
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment & Credentials
+.env
+.env.local
+*.pem
+*.key
+
+# Editor & Workspace
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary files & Logs
+*.log
+tmp/
+temp/
+
+# User data & browser exports
+*.bak
+*.backup
+export/
+

@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VISIONFREE — Personal Vision Profiles & Assessment Workspace</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-brand">
+        <img src="../assets/icons/icon48.png" alt="VISIONFREE Logo" class="brand-icon">
+        <div>
+          <h1>VISIONFREE</h1>
+          <p class="tagline">Personalized Visual Profile, Calibration & Assessment Workspace</p>
+        </div>
+      </div>
+      <div class="header-status">
+        <span class="status-pill status-active">Phase 4: Calibration & Assessment Suite</span>
+      </div>
+    </header>
+
+    <!-- Workspace Tab Navigation -->
+    <nav class="app-nav" aria-label="Workspace Navigation">
+      <button type="button" class="nav-tab active" id="tab-btn-profiles" data-target="panel-profiles">
+        Profiles & Webpage Preferences
+      </button>
+      <button type="button" class="nav-tab" id="tab-btn-assessment" data-target="panel-assessment">
+        Vision Assessment & Calibration
+      </button>
+    </nav>
+
+    <main class="app-main">
+      <!-- ==============================================================
+           PANEL 1: PROFILES & WEBPAGE PREFERENCES (Phases 1-3)
+           ============================================================== -->
+      <div id="panel-profiles" class="tab-panel active">
+        <!-- Section A: Vision Profiles Management -->
+        <section class="card">
+          <div class="card-header">
+            <div>
+              <h2>Section A — Vision Profiles</h2>
+              <p class="section-desc">Manage your personalized vision profiles and select which profile is active during reading sessions.</p>
+            </div>
+            <button type="button" class="btn btn-primary" id="btn-create-profile">+ New Profile</button>
+          </div>
+
+          <div class="profile-manager-row">
+            <div class="profile-select-group">
+              <label for="profile-select">Selected Profile:</label>
+              <div class="profile-control-bar">
+                <select id="profile-select" aria-label="Select vision profile"></select>
+                <span id="active-badge" class="badge badge-active">Active</span>
+              </div>
+            </div>
+
+            <div class="profile-actions">
+              <button type="button" class="btn btn-secondary btn-sm" id="btn-set-active" title="Activate this profile for toolbar one-click browsing">Set as Active</button>
+              <button type="button" class="btn btn-secondary btn-sm" id="btn-rename-profile" title="Rename this profile">Rename</button>
+              <button type="button" class="btn btn-danger btn-sm" id="btn-delete-profile" title="Delete this profile">Delete</button>
+              <button type="button" class="btn btn-outline btn-sm" id="btn-reset-profile" title="Reset this profile's prescription and preferences to default">Reset to Defaults</button>
+            </div>
+          </div>
+
+          <!-- Inline New / Rename Profile Form -->
+          <div id="profile-name-dialog" class="inline-dialog" style="display: none;">
+            <label id="profile-dialog-label" for="profile-name-input">Profile Name:</label>
+            <div class="dialog-input-row">
+              <input type="text" id="profile-name-input" maxlength="60" placeholder="e.g. Reading Profile, Evening Work">
+              <button type="button" class="btn btn-primary btn-sm" id="btn-save-profile-name">Save</button>
+              <button type="button" class="btn btn-secondary btn-sm" id="btn-cancel-profile-name">Cancel</button>
+            </div>
+            <span id="profile-name-error" class="field-error"></span>
+          </div>
+        </section>
+
+        <!-- Section B: Prescription Details -->
+        <section class="card">
+          <div class="card-header">
+            <div>
+              <h2>Section B — Professional Spectacles Prescription</h2>
+              <p class="section-desc">
+                Enter the exact parameters from your current optometrist or ophthalmologist prescription.
+                These values are stored locally for future optical research modules.
+              </p>
+            </div>
+            <span class="badge badge-neutral">Data Storage Only</span>
+          </div>
+
+          <div class="prescription-notice">
+            <strong>Guidance:</strong> Please copy values directly from your written prescription. 
+            Use signed decimals (e.g. <code>-2.25</code> or <code>+1.50</code>). 
+            Axis (1°–180°) is required only if Cylinder (CYL) is non-zero. If you do not have astigmatism, leave Cylinder at <code>0</code> or blank.
+          </div>
+
+          <form id="prescription-form">
+            <div class="eyes-grid">
+              <!-- Right Eye (OD) -->
+              <fieldset class="eye-card">
+                <legend>Right Eye (OD — Oculus Dexter)</legend>
+                
+                <div class="field-group">
+                  <label for="od-sph">Sphere (SPH):</label>
+                  <div class="input-with-unit">
+                    <input type="text" id="od-sph" name="od-sph" placeholder="e.g. -2.00 or +1.25" autocomplete="off">
+                    <span class="unit">Diopters (D)</span>
+                  </div>
+                  <span id="od-sph-error" class="field-error"></span>
+                </div>
+
+                <div class="field-group">
+                  <label for="od-cyl">Cylinder (CYL):</label>
+                  <div class="input-with-unit">
+                    <input type="text" id="od-cyl" name="od-cyl" placeholder="e.g. -0.75 or 0" autocomplete="off">
+                    <span class="unit">Diopters (D)</span>
+                  </div>
+                  <span id="od-cyl-error" class="field-error"></span>
+                </div>
+
+                <div class="field-group">
+                  <label for="od-axis">Axis:</label>
+                  <div class="input-with-unit">
+                    <input type="text" id="od-axis" name="od-axis" placeholder="1 to 180" autocomplete="off">
+                    <span class="unit">Degrees (°)</span>
+                  </div>
+                  <span id="od-axis-error" class="field-error"></span>
+                </div>
+              </fieldset>
+
+              <!-- Left Eye (OS) -->
+              <fieldset class="eye-card">
+                <legend>Left Eye (OS — Oculus Sinister)</legend>
+
+                <div class="field-group">
+                  <label for="os-sph">Sphere (SPH):</label>
+                  <div class="input-with-unit">
+                    <input type="text" id="os-sph" name="os-sph" placeholder="e.g. -2.50 or +1.50" autocomplete="off">
+                    <span class="unit">Diopters (D)</span>
+                  </div>
+                  <span id="os-sph-error" class="field-error"></span>
+                </div>
+
+                <div class="field-group">
+                  <label for="os-cyl">Cylinder (CYL):</label>
+                  <div class="input-with-unit">
+                    <input type="text" id="os-cyl" name="os-cyl" placeholder="e.g. -0.50 or 0" autocomplete="off">
+                    <span class="unit">Diopters (D)</span>
+                  </div>
+                  <span id="os-cyl-error" class="field-error"></span>
+                </div>
+
+                <div class="field-group">
+                  <label for="os-axis">Axis:</label>
+                  <div class="input-with-unit">
+                    <input type="text" id="os-axis" name="os-axis" placeholder="1 to 180" autocomplete="off">
+                    <span class="unit">Degrees (°)</span>
+                  </div>
+                  <span id="os-axis-error" class="field-error"></span>
+                </div>
+              </fieldset>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary" id="btn-save-prescription">Save Prescription Details</button>
+              <span id="prescription-feedback" class="status-msg" role="alert"></span>
+            </div>
+          </form>
+        </section>
+
+        <!-- Section C: Visual Preferences -->
+        <section class="card">
+          <div class="card-header">
+            <div>
+              <h2>Section C — Visual Reading Preferences</h2>
+              <p class="section-desc">Display preferences for line spacing, letter tracking, and contrast. These settings are applied when VISIONFREE is toggled on.</p>
+            </div>
+            <span class="badge badge-active">Active In Webpages</span>
+          </div>
+
+          <!-- Presets Row -->
+          <div class="presets-bar">
+            <label for="preset-select">Reading Presets:</label>
+            <select id="preset-select">
+              <option value="custom">Custom Configuration</option>
+              <option value="standard" selected>Standard Reading</option>
+              <option value="spacious">Spacious Reading</option>
+              <option value="high_contrast">High Contrast</option>
+              <option value="compact">Compact Reading</option>
+            </select>
+            <span class="hint">Selecting a preset applies neutral baseline spacing and contrast.</span>
+          </div>
+
+          <form id="preferences-form">
+            <div class="form-group">
+              <label for="lineSpacing">Paragraph Line Spacing:</label>
+              <div class="control-row">
+                <select id="lineSpacing" name="lineSpacing">
+                  <option value="1.4">Compact (1.4x)</option>
+                  <option value="1.6" selected>Comfortable (1.6x)</option>
+                  <option value="1.8">Relaxed (1.8x)</option>
+                  <option value="2.0">Spacious (2.0x)</option>
+                </select>
+                <span class="hint">Adjusts vertical space between lines of article text.</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="letterSpacing">Letter Spacing (Tracking):</label>
+              <div class="control-row">
+                <select id="letterSpacing" name="letterSpacing">
+                  <option value="0em">Standard (0.00em)</option>
+                  <option value="0.02em" selected>Subtle (+0.02em)</option>
+                  <option value="0.04em">Expanded (+0.04em)</option>
+                </select>
+                <span class="hint">Expands character spacing to relieve visual crowding.</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="fontWeightDelta">Text Weight Bias:</label>
+              <div class="control-row">
+                <select id="fontWeightDelta" name="fontWeightDelta">
+                  <option value="0" selected>Unchanged (Inherit site weight)</option>
+                  <option value="100">Medium (+100 weight)</option>
+                  <option value="200">Bolder (+200 weight)</option>
+                </select>
+                <span class="hint">Subtly thickens glyph strokes for improved legibility.</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <div class="checkbox-row">
+                <input type="checkbox" id="highContrastText" name="highContrastText">
+                <label for="highContrastText" class="checkbox-label">
+                  <strong>High-Contrast Text Accentuation</strong>
+                  <span class="hint">Applies a micro-contrast shadow to sharpen text edges against backgrounds.</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Live Preview Box -->
+            <div class="preview-container">
+              <label class="preview-label">Live Preview (Current Profile Display Simulation):</label>
+              <div id="sample-preview" class="sample-text">
+                Vision-related digital adaptation focuses on optimizing typographical flow, edge
+                prominence, and spatial frequency. When reading lengthy articles, comfortable line spacing
+                and subtle letter separation reduce cognitive strain without distorting original site styling.
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary" id="btn-save-preferences">Save Preferences to Profile</button>
+              <span id="preferences-feedback" class="status-msg" role="alert"></span>
+            </div>
+          </form>
+        </section>
+
+        <!-- Section D: Information, Privacy & Medical Disclaimers -->
+        <section class="card info-card">
+          <h2>Section D — Medical Disclaimer, Privacy & Research Notice</h2>
+          <div class="info-content">
+            <p>
+              <strong>Professional Prescription Notice:</strong> Please enter values obtained from a certified eye-care professional.
+              VISIONFREE does not perform eyesight tests, diagnose eye health, or determine prescriptions.
+            </p>
+            <p>
+              <strong>Experimental Status:</strong> Prescription values collected in this phase are stored solely for research and future processing pipelines.
+              The current version does not perform optical blur correction, wavefront deconvolution, or replace prescribed spectacles.
+            </p>
+            <p>
+              <strong>Privacy & Local Storage:</strong> All profile and prescription data are stored exclusively inside your local Chrome profile 
+              using <code>chrome.storage.local</code>. No data is transmitted to external servers, cloud databases, or third-party analytics.
+              Please note that local browser storage is not an encrypted medical health-record vault.
+            </p>
+          </div>
+        </section>
+      </div>
+
+      <!-- ==============================================================
+           PANEL 2: VISION ASSESSMENT & DISPLAY CALIBRATION (Phase 4)
+           ============================================================== -->
+      <div id="panel-assessment" class="tab-panel">
+        <!-- Section 4A & 4B: Display Calibration & Viewing Distance -->
+        <section class="card">
+          <div class="card-header">
+            <div>
+              <h2>Display Calibration & Physical Scaling</h2>
+              <p class="section-desc">Calibrate screen pixel density and specify your eye-to-screen distance to enable visual angle calculations.</p>
+            </div>
+            <span id="cal-status-badge" class="badge badge-uncalibrated">Uncalibrated Mode</span>
+          </div>
+
+          <!-- Stale Calibration Warning Banner -->
+          <div id="cal-stale-warning" class="notice-box notice-warning" style="display: none; margin-bottom: 20px;">
+            <strong>Warning:</strong> <span id="cal-stale-reason">Display conditions may have changed. Please verify calibration.</span>
+            Please review the ruler length below and click <strong>Save Display Calibration</strong> before conducting calibrated assessments.
+          </div>
+
+          <div class="calibration-grid">
+            <!-- Hardware / Browser Specs -->
+            <div class="cal-spec-box">
+              <h3>Browser Display Information</h3>
+              <ul class="spec-list">
+                <li><span>Viewport Size:</span> <strong id="spec-viewport">--</strong></li>
+                <li><span>Device Pixel Ratio (DPR):</span> <strong id="spec-dpr">--</strong></li>
+                <li><span>Screen Resolution:</span> <strong id="spec-screen">--</strong></li>
+                <li><span>Approx. Pixel Density:</span> <strong id="spec-px-mm">~3.78 px/mm (Standard)</strong></li>
+              </ul>
+              <p class="cal-hint">
+                <strong>Technical Note:</strong> Browsers cannot detect physical monitor changes if screen resolution and DPR match. If you switch displays, please re-verify calibration manually.
+              </p>
+            </div>
+
+            <!-- Manual Ruler Calibration -->
+            <div class="cal-interactive-box">
+              <h3>Physical Ruler Calibration (100 mm)</h3>
+              <p class="cal-instructions">
+                Hold a physical metric ruler against your display. Adjust the slider until the blue reference bar measures <strong>exactly 100 millimeters (10 centimeters)</strong>.
+              </p>
+
+              <!-- Reference Bar -->
+              <div class="ruler-container">
+                <div id="ruler-bar" class="ruler-bar" style="width: 378px;">
+                  <span class="ruler-target-label">Target: Exactly 100 mm (10 cm)</span>
+                </div>
+              </div>
+
+              <!-- Slider Controls -->
+              <div class="slider-row">
+                <label for="cal-slider">Length Adjustment:</label>
+                <input type="range" id="cal-slider" min="220" max="600" step="1" value="378">
+                <span id="cal-slider-display">378 px (3.78 px/mm)</span>
+              </div>
+
+              <!-- Viewing Distance Field -->
+              <div class="field-group distance-group">
+                <label for="viewing-distance-input">Viewing Distance (Centimeters):</label>
+                <div class="input-with-unit">
+                  <input type="number" id="viewing-distance-input" min="25" max="150" value="50" step="1">
+                  <span class="unit">cm</span>
+                </div>
+                <span class="hint">Measure the straight-line distance from your eyes to the screen (typically 45–65 cm).</span>
+              </div>
+
+              <div class="cal-actions">
+                <button type="button" class="btn btn-primary btn-sm" id="btn-save-calibration">Save Display Calibration</button>
+                <button type="button" class="btn btn-secondary btn-sm" id="btn-reset-calibration">Reset Calibration</button>
+                <span id="cal-feedback" class="status-msg"></span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 4C: Experimental Visual Acuity-Style Assessment -->
+        <section class="card">
+          <div class="card-header">
+            <div>
+              <h2>Experimental Visual Acuity Task (Tumbling E)</h2>
+              <p class="section-desc">Presents randomized multi-trial Tumbling E optotypes to identify the smallest consistently resolvable visual angle.</p>
+            </div>
+            <span class="badge badge-neutral">Experimental Observation</span>
+          </div>
+
+          <div class="task-setup-box">
+            <div class="task-config-row">
+              <div class="eye-select-radios">
+                <span class="radio-label">Select Testing Eye:</span>
+                <label><input type="radio" name="acuity-eye" value="rightEye" checked> Right Eye (OD)</label>
+                <label><input type="radio" name="acuity-eye" value="leftEye"> Left Eye (OS)</label>
+              </div>
+              <div class="task-instructions-summary">
+                Gently cover your other eye. Each level tests <strong>5 randomized trials</strong>. At least <strong>4 out of 5 correct (80%)</strong> is required to advance.
+              </div>
+            </div>
+          </div>
+
+          <!-- Interactive Test Stage -->
+          <div class="test-arena">
+            <div class="arena-header">
+              <span id="acuity-level-indicator">Level: Ready to start</span>
+              <span id="acuity-trial-indicator">Trial: 0 of 5</span>
+              <span id="acuity-score-indicator">Total: 0 | Correct: 0</span>
+            </div>
+
+            <!-- Optotype Display Stage (Experimental 5x5 Grid with 5:5:1 Geometric Proportions) -->
+            <div id="acuity-stage" class="test-stage">
+              <div id="acuity-optotype-wrapper" class="optotype-wrapper">
+                <!-- SVG injected dynamically -->
+                <svg viewBox="0 0 50 50" width="64" height="64" style="transform: rotate(0deg);"><path d="M 0,0 L 50,0 L 50,10 L 10,10 L 10,20 L 40,20 L 40,30 L 10,30 L 10,40 L 50,40 L 50,50 L 0,50 Z" fill="#000000"/></svg>
+              </div>
+              <div id="acuity-paused-overlay" class="stage-overlay" style="display: none;">
+                <span>Task Paused — Click Resume</span>
+              </div>
+            </div>
+
+            <!-- Direction Response Controls -->
+            <div class="directional-controls">
+              <div class="dir-row dir-top">
+                <button type="button" class="btn-dir" data-dir="up" title="Up (Key: ArrowUp)">&uarr; Up</button>
+              </div>
+              <div class="dir-row dir-mid">
+                <button type="button" class="btn-dir" data-dir="left" title="Left (Key: ArrowLeft)">&larr; Left</button>
+                <button type="button" class="btn-dir" data-dir="right" title="Right (Key: ArrowRight)">&rarr; Right</button>
+              </div>
+              <div class="dir-row dir-bottom">
+                <button type="button" class="btn-dir" data-dir="down" title="Down (Key: ArrowDown)">&darr; Down</button>
+              </div>
+            </div>
+
+            <!-- Task State Controls -->
+            <div class="arena-footer">
+              <button type="button" class="btn btn-primary" id="btn-start-acuity">Start Visual Task</button>
+              <button type="button" class="btn btn-secondary" id="btn-pause-acuity" style="display: none;">Pause</button>
+              <button type="button" class="btn btn-primary" id="btn-resume-acuity" style="display: none;">Resume</button>
+              <button type="button" class="btn btn-outline" id="btn-restart-acuity" style="display: none;">Restart</button>
+              <button type="button" class="btn btn-danger btn-sm" id="btn-cancel-acuity" style="display: none;">Cancel</button>
+              <span id="acuity-status-msg" class="arena-status">Press "Start Visual Task" or use Arrow Keys</span>
+            </div>
+          </div>
+
+          <!-- Acuity Result Summary -->
+          <div id="acuity-result-card" class="result-box" style="display: none;">
+            <h3>Visual Task Result Summary</h3>
+            <div class="result-metrics">
+              <div class="metric"><span class="m-label">Testing Eye:</span> <strong id="res-acuity-eye">Right Eye (OD)</strong></div>
+              <div class="metric"><span class="m-label">Identified Threshold Size:</span> <strong id="res-acuity-threshold">--</strong></div>
+              <div class="metric"><span class="m-label">Threshold Accuracy:</span> <strong id="res-acuity-thresh-acc">--</strong></div>
+              <div class="metric"><span class="m-label">Overall Accuracy:</span> <strong id="res-acuity-overall-acc">--</strong></div>
+              <div class="metric"><span class="m-label">Display Condition:</span> <strong id="res-acuity-cal">Calibrated</strong></div>
+            </div>
+            <!-- Per-Level Progression Table -->
+            <div class="breakdown-container">
+              <h4>Multi-Trial Level Progression:</h4>
+              <ul id="res-acuity-breakdown" class="level-breakdown-list"></ul>
+            </div>
+            <p class="disclaimer-mini">
+              * Experimental screen-based observation only. This task does not diagnose visual disorders or provide a medical prescription.
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 4D: Relative Contrast Assessment -->
+        <section class="card">
+          <div class="card-header">
+            <div>
+              <h2>Relative Contrast Perception Task</h2>
+              <p class="section-desc">Presents randomized multi-trial symbols at progressive contrast levels to estimate relative contrast perception threshold.</p>
+            </div>
+            <span class="badge badge-neutral">Screen Contrast Experiment</span>
+          </div>
+
+          <div class="task-setup-box">
+            <p class="task-instructions-summary">
+              Each contrast tier tests <strong>4 randomized trials</strong>. At least <strong>3 out of 4 correct (75%)</strong> is required to advance to lower contrast tiers.
+            </p>
+          </div>
+
+          <div class="test-arena">
+            <div class="arena-header">
+              <span id="contrast-level-indicator">Contrast Tier: Ready</span>
+              <span id="contrast-trial-indicator">Trial: 0 of 4</span>
+              <span id="contrast-score-indicator">Total: 0 | Correct: 0</span>
+            </div>
+
+            <div id="contrast-stage" class="test-stage">
+              <div id="contrast-optotype-wrapper" class="optotype-wrapper">
+                <svg viewBox="0 0 50 50" width="54" height="54"><path d="M 0,0 L 50,0 L 50,10 L 10,10 L 10,20 L 40,20 L 40,30 L 10,30 L 10,40 L 50,40 L 50,50 L 0,50 Z" fill="#000000"/></svg>
+              </div>
+              <div id="contrast-paused-overlay" class="stage-overlay" style="display: none;">
+                <span>Contrast Task Paused</span>
+              </div>
+            </div>
+
+            <div class="directional-controls">
+              <div class="dir-row dir-top">
+                <button type="button" class="btn-dir btn-dir-contrast" data-dir="up">&uarr; Up</button>
+              </div>
+              <div class="dir-row dir-mid">
+                <button type="button" class="btn-dir btn-dir-contrast" data-dir="left">&larr; Left</button>
+                <button type="button" class="btn-dir btn-dir-contrast" data-dir="right">&rarr; Right</button>
+              </div>
+              <div class="dir-row dir-bottom">
+                <button type="button" class="btn-dir btn-dir-contrast" data-dir="down">&darr; Down</button>
+              </div>
+            </div>
+
+            <div class="arena-footer">
+              <button type="button" class="btn btn-primary" id="btn-start-contrast">Start Contrast Task</button>
+              <button type="button" class="btn btn-secondary" id="btn-pause-contrast" style="display: none;">Pause</button>
+              <button type="button" class="btn btn-primary" id="btn-resume-contrast" style="display: none;">Resume</button>
+              <button type="button" class="btn btn-outline" id="btn-restart-contrast" style="display: none;">Restart</button>
+              <button type="button" class="btn btn-danger btn-sm" id="btn-cancel-contrast" style="display: none;">Cancel</button>
+              <span id="contrast-status-msg" class="arena-status">Press "Start Contrast Task"</span>
+            </div>
+          </div>
+
+          <div id="contrast-result-card" class="result-box" style="display: none;">
+            <h3>Contrast Threshold Result</h3>
+            <div class="result-metrics">
+              <div class="metric"><span class="m-label">Lowest Contrast Identified:</span> <strong id="res-contrast-thresh">--</strong></div>
+              <div class="metric"><span class="m-label">Threshold Accuracy:</span> <strong id="res-contrast-thresh-acc">--</strong></div>
+              <div class="metric"><span class="m-label">Tiers Tested:</span> <strong id="res-contrast-levels">--</strong></div>
+            </div>
+            <div class="breakdown-container">
+              <h4>Contrast Tier Breakdown:</h4>
+              <ul id="res-contrast-breakdown" class="level-breakdown-list"></ul>
+            </div>
+            <p class="disclaimer-mini">
+              * Relative sRGB contrast settings. Output is influenced by monitor brightness, display gamma, and room lighting. Not a medical Pelli-Robson contrast examination.
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 4E: Experimental Reading Performance Assessment -->
+        <section class="card">
+          <div class="card-header">
+            <div>
+              <h2>Experimental Reading Performance Assessment</h2>
+              <p class="section-desc">Measures reading pace (WPM) under controlled typography followed by a 4-question comprehension evaluation.</p>
+            </div>
+            <span class="badge badge-neutral">Reading Speed & Comprehension</span>
+          </div>
+
+          <div class="reading-task-box">
+            <div class="reading-controls-bar">
+              <button type="button" class="btn btn-primary" id="btn-start-reading">Start Reading</button>
+              <button type="button" class="btn btn-secondary" id="btn-finish-reading" disabled>Finished Reading</button>
+              <span id="reading-timer-display" class="timer-badge">0.0 s</span>
+            </div>
+
+            <!-- Standardized Reading Passage -->
+            <div id="reading-passage-card" class="reading-passage-box blurred">
+              <h3 class="passage-title">Digital Typography & Human Vision</h3>
+              <p id="reading-passage-text">
+                Human visual perception relies on subtle contrast transitions and comfortable spatial frequencies. When reading long articles on digital displays, text layout directly influences cognitive stamina. Optimal paragraph line spacing prevents the reader from losing their place between lines, while subtle letter tracking minimizes visual crowding. These adjustments allow our visual cortex to recognize character wordforms more fluidly. By tuning digital display parameters to individual viewing comfort, readers can engage with technical and literary content with greater ease, reducing the fatigue often associated with prolonged screen sessions.
+              </p>
+            </div>
+
+            <!-- Post-Reading Comprehension Questions -->
+            <div id="reading-comprehension-box" class="comprehension-box" style="display: none;">
+              <h3>Reading Comprehension Questions</h3>
+              <p class="comp-desc">Please answer these 4 questions based on the passage you just read:</p>
+              
+              <form id="comprehension-form">
+                <div class="comp-question" id="comp-q1-group">
+                  <p class="q-text">1. What does human visual perception rely on according to the text?</p>
+                  <label><input type="radio" name="comp-q1" value="a"> Rapid blinking and high brightness</label>
+                  <label><input type="radio" name="comp-q1" value="b"> Subtle contrast transitions and comfortable spatial frequencies</label>
+                  <label><input type="radio" name="comp-q1" value="c"> Small fonts and darkened rooms</label>
+                  <label><input type="radio" name="comp-q1" value="d"> Constantly shifting color temperatures</label>
+                </div>
+
+                <div class="comp-question" id="comp-q2-group">
+                  <p class="q-text">2. What is the main benefit of optimal paragraph line spacing?</p>
+                  <label><input type="radio" name="comp-q2" value="a"> Prevents the reader from losing their place between lines</label>
+                  <label><input type="radio" name="comp-q2" value="b"> Doubles reading speed automatically</label>
+                  <label><input type="radio" name="comp-q2" value="c"> Changes font colors dynamically</label>
+                  <label><input type="radio" name="comp-q2" value="d"> Hides unwanted display reflections</label>
+                </div>
+
+                <div class="comp-question" id="comp-q3-group">
+                  <p class="q-text">3. What visual issue does subtle letter tracking minimize?</p>
+                  <label><input type="radio" name="comp-q3" value="a"> Display battery power consumption</label>
+                  <label><input type="radio" name="comp-q3" value="b"> Visual crowding between character glyphs</label>
+                  <label><input type="radio" name="comp-q3" value="c"> Internet network bandwidth usage</label>
+                  <label><input type="radio" name="comp-q3" value="d"> Mouse cursor tracking latency</label>
+                </div>
+
+                <div class="comp-question" id="comp-q4-group">
+                  <p class="q-text">4. What is the overall goal of tuning digital display parameters to individual viewing comfort?</p>
+                  <label><input type="radio" name="comp-q4" value="a"> To eliminate the need for computer displays</label>
+                  <label><input type="radio" name="comp-q4" value="b"> To engage with content with greater ease and reduce fatigue</label>
+                  <label><input type="radio" name="comp-q4" value="c"> To force all web pages into a single column</label>
+                  <label><input type="radio" name="comp-q4" value="d"> To maximize screen contrast to 100% at all times</label>
+                </div>
+
+                <!-- Subjective Comfort Rating -->
+                <div class="comfort-rating-group">
+                  <label>Subjective Reading Comfort Rating (1–5):</label>
+                  <div class="rating-buttons">
+                    <button type="button" class="btn-rating" data-rating="1">1 (Tiring)</button>
+                    <button type="button" class="btn-rating" data-rating="2">2 (Strained)</button>
+                    <button type="button" class="btn-rating" data-rating="3">3 (Acceptable)</button>
+                    <button type="button" class="btn-rating selected" data-rating="4">4 (Comfortable)</button>
+                    <button type="button" class="btn-rating" data-rating="5">5 (Effortless)</button>
+                  </div>
+                </div>
+
+                <div class="comp-actions">
+                  <button type="submit" class="btn btn-primary" id="btn-submit-comprehension">Submit Comprehension & Save</button>
+                  <span id="comp-error-msg" class="field-error"></span>
+                </div>
+              </form>
+            </div>
+
+            <!-- Reading Result Card -->
+            <div id="reading-result-card" class="result-box" style="display: none;">
+              <h3>Reading Performance Metrics</h3>
+              <div class="result-metrics">
+                <div class="metric"><span class="m-label">Reading Speed:</span> <strong id="res-reading-wpm">-- WPM</strong></div>
+                <div class="metric"><span class="m-label">Reading Time:</span> <strong id="res-reading-time">-- s</strong></div>
+                <div class="metric"><span class="m-label">Comprehension Score:</span> <strong id="res-reading-comp">--</strong></div>
+                <div class="metric"><span class="m-label">Comfort Score:</span> <strong id="res-reading-comfort">-- / 5</strong></div>
+              </div>
+              <p class="disclaimer-mini">
+                * Comprehension questions evaluate retention and attention under reading settings. They do not measure pronunciation or visual misreading errors.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 4F: Assessment Results History & Storage -->
+        <section class="card">
+          <div class="card-header">
+            <div>
+              <h2>Assessment Records for Active Profile</h2>
+              <p class="section-desc">Stored experimental observations associated with the currently selected profile.</p>
+            </div>
+            <button type="button" class="btn btn-danger btn-sm" id="btn-clear-assessments">Clear Assessment History</button>
+          </div>
+
+          <div class="records-table-container">
+            <table class="records-table">
+              <thead>
+                <tr>
+                  <th>Assessment Type</th>
+                  <th>Observed Metric & Accuracy</th>
+                  <th>Display Condition</th>
+                  <th>Timestamp</th>
+                </tr>
+              </thead>
+              <tbody id="assessment-history-body">
+                <tr>
+                  <td colspan="4" class="empty-table-msg">No assessment records saved yet for this profile.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <p>VISIONFREE v0.4.1 &bull; Manifest V3 Personal Profile & Assessment Architecture &bull; Local Browser Storage</p>
+    </footer>
+  </div>
+
+  <script src="../core/profiles.js"></script>
+  <script src="../core/assessment.js"></script>
+  <script src="../core/storage.js"></script>
+  <script src="options.js"></script>
+</body>
+</html>
