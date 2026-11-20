@@ -23,50 +23,67 @@ Its primary objective in Phase 5 is to evaluate whether digital image pre-compen
 
 ## 2. Python Environment & Upgrade Status
 
-### Current Environment Audit:
-- **Active Python:** `Python 3.9.6` (Clang 21.0.0, Apple Silicon `arm64`).
-- **Operating System:** `macOS 27.2.1` (`arm64`, Darwin Kernel 27.2.0).
-- **Virtual Environment:** `research/.venv/` (isolated, excluded from Git).
+### Dual Research Environments:
+VISIONFREE maintains two isolated scientific research environments to ensure backward compatibility and modern forward-looking research:
 
-### Python 3.12 Availability:
-- **Status:** Python 3.12 is **not currently installed** on this host.
-- **System Integrity:** In accordance with project restrictions, system Python was not modified, and no global packages or unvetted runtimes were force-installed.
-- **Upgrade Path:** When upgrading to Python 3.12, install it via the official macOS universal package or Homebrew (`brew install python@3.12`), create a parallel virtual environment (`python3.12 -m venv research/.venv312`), verify all 16 automated tests pass, and only then update `requirements-lock.txt`.
+1. **Primary Python 3.14 Research Environment (`research/.venv314/`):**
+   - **Python Version:** `Python 3.14.10` (Clang 21.0.0, native Apple Silicon `arm64`).
+   - **Status:** Fully configured, verified, and passing 100% of automated tests (16/16 green).
+   - **Dependency Lockfile:** [`research/requirements-py314-lock.txt`](file:///Users/vereshwarapupraveenkumar/VISION%20FREE/research/requirements-py314-lock.txt).
+2. **Legacy Python 3.9 Baseline Environment (`research/.venv/`):**
+   - **Python Version:** `Python 3.9.6` (Clang 21.0.0, Apple Silicon `arm64`).
+   - **Status:** Fully functional, preserved for historical reproducibility and regression verification (16/16 green).
+   - **Dependency Lockfile:** [`research/requirements-lock.txt`](file:///Users/vereshwarapupraveenkumar/VISION%20FREE/research/requirements-lock.txt).
+
+### Git Exclusion:
+Both environments (`research/.venv/` and `research/.venv314/`) are strictly excluded in `research/.gitignore`. Neither virtual environment is tracked in Git.
 
 ---
 
 ## 3. Environment Activation Instructions
 
-### macOS / Linux (bash / zsh)
+### Python 3.14 Research Environment (`.venv314`) — RECOMMENDED
 ```bash
-# 1. Navigate to the project root
-cd "/Users/vereshwarapupraveenkumar/VISION FREE"
+# macOS / Linux (bash / zsh):
+source research/.venv314/bin/activate
 
-# 2. Activate the isolated virtual environment
-source research/.venv/bin/activate
+# Verify Python version and architecture:
+python -c "import platform, sys; print(sys.version); print(platform.machine())"
 
-# 3. Verify Python and scientific packages
-python --version
-pip list
+# Execute test suite:
+PYTHONPATH=research/src pytest research/tests/ -v
 ```
 
-### Windows (PowerShell / Command Prompt)
+### Windows Python 3.14 Setup (PowerShell / Command Prompt):
 ```powershell
-# 1. Navigate to the project root
-cd "C:\path\to\VISION FREE"
+# 1. Install Python 3.14 from python.org or via winget:
+# winget install Python.Python.3.14
 
-# 2. Activate the virtual environment
-.\research\.venv\Scripts\Activate.ps1
+# 2. Create environment using Python Launcher:
+py -3.14 -m venv research\.venv314
 
-# (For Command Prompt)
-# .\research\.venv\Scripts\activate.bat
+# 3. Activate:
+.\research\.venv314\Scripts\Activate.ps1
 
-# 3. Verify Python environment
-python --version
-pip list
+# 4. Install dependencies from py314 lockfile:
+pip install -r research\requirements-py314-lock.txt
+
+# 5. Run test suite:
+$env:PYTHONPATH="research\src"
+pytest research\tests\ -v
 ```
 
-To deactivate the virtual environment on any platform:
+### Legacy Python 3.9 Environment (`.venv`)
+```bash
+# macOS / Linux:
+source research/.venv/bin/activate
+PYTHONPATH=research/src pytest research/tests/ -v
+
+# Windows (PowerShell):
+.\research\.venv\Scripts\Activate.ps1
+```
+
+To deactivate any active virtual environment:
 ```bash
 deactivate
 ```
@@ -75,7 +92,19 @@ deactivate
 
 ## 4. Required Scientific Packages
 
-The minimal scientific Python stack installed in `research/.venv/` (pinned in `requirements-lock.txt`):
+### Python 3.14 Dependency Stack (`research/requirements-py314-lock.txt`):
+
+| Package | Pinned Version in `.venv314` | Primary Role in Research Stack |
+| :--- | :---: | :--- |
+| **NumPy** | `2.5.5` | N-dimensional array processing and complex pupil matrix math |
+| **SciPy** | `1.18.1` | Fast Fourier Transforms (`scipy.fft`) and optimization (`scipy.optimize`) |
+| **Matplotlib** | `3.11.2` | Cross-sectional luminance profile plotting and MTF visualization |
+| **Pillow** | `13.0.0` | Synthetic optotype drawing, format conversion, and image I/O |
+| **scikit-image** | `0.26.0` | Structural Similarity (`ssim`), PSNR, and image quality metrics |
+| **pytest** | `9.2.0` | Automated testing of dataset integrity, diversity, and reproducibility |
+
+### Legacy Python 3.9 Dependency Stack (`research/requirements-lock.txt`):
+- `numpy==2.0.2`, `scipy==1.13.1`, `matplotlib==3.9.4`, `pillow==11.3.0`, `scikit-image==0.24.0`, `pytest==8.4.2`.
 
 | Package | Installed Version | Primary Role in Research Stack |
 | :--- | :---: | :--- |

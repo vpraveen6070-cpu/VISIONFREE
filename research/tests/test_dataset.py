@@ -36,7 +36,8 @@ def benchmark_dir():
 def canonical_manifest(benchmark_dir):
     """Ensure benchmark dataset is generated and return parsed manifest."""
     manifest_path = benchmark_dir / "dataset_manifest.json"
-    generate_benchmark_dataset(benchmark_dir, seed=42)
+    if not manifest_path.is_file():
+        generate_benchmark_dataset(benchmark_dir, seed=42)
     return load_manifest(manifest_path)
 
 
@@ -285,6 +286,5 @@ def test_images_are_pristine_unblurred(benchmark_dir, canonical_manifest):
     assert v_knife.is_file()
 
     with Image.open(v_knife) as im:
-        arr = list(im.getdata())
-        unique_vals = set(arr)
+        unique_vals = set(np.array(im).flatten())
         assert unique_vals == {0, 255}, f"Knife edge contains non-binary values {unique_vals}, indicating blur"
